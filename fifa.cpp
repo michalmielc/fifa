@@ -114,7 +114,7 @@ int main()
 	//	showTables(resultsString, resultsInt, teamStatus);
 		cout << "ROUND: " << round << endl;
 		cout << "-------------------------------------------"<< endl;
-		system("pause");
+	//	system("pause");
 		getRandomPairs(teamStatus, NUM_TEAMS, resultsInt, NUM_GAMES);
 		saveResults(teams, resultsInt, resultsString, NUM_GAMES);
 		displayResults(resultsString, NUM_GAMES);
@@ -128,6 +128,7 @@ int main()
 		system("pause");
 		game = ifGameEnd(teamStatus, NUM_TEAMS);
 		round++;
+		system("cls");
 	}
 	while (!game);
 	
