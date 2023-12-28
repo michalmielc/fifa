@@ -22,22 +22,22 @@ void intro();
 int getRandomInteger(int, int);
 
 //losowanie par
-void getRandomPairs(bool[], int, int[][10], int);
+void getRandomPairs(bool[], int, int[][11], int, int);
 
 //zamiana miejscami w tablicy
 void swap(int&, int&);
 
 //wyszukanie wolnego id w tabeli spotkania
-int getNextIdGame(int[][10], int);
+int getNextIdGame(int[][11], int);
 
 //wyœwietlenie wyników spotkania zakoñczone lub nierozegrane
-void displayResults(string[][4], int);
+void displayResults(string[][5], int, int);
 
 //funkcja znajduj¹ca nazwê kraju wg id
 string findNameById(string [], int );
 
 //funkcja zapisuj¹ca dane z tabeli results do tabeli wyniki
-void saveResults(string[], int[][10], string[][4], int);
+void saveResults(string[], int[][11], string[][5], int);
 
 //funkcja losuje wynik
 void createResult(int&, int&, int&, int&, int&, int&);
@@ -46,7 +46,7 @@ void createResult(int&, int&, int&, int&, int&, int&);
 void penalties(int&, int&);
 
 //funkcja losuj¹ca wyniki
-void createResults(int[][10], int, int&, int&, int&, int&, int&, int&, bool[]);
+void createResults(int[][11], int, int&, int&, int&, int&, int&, int&, bool[]);
 
 //playoff znacznik gra/odpada
 void setPlayOffTeam(bool[], int);
@@ -55,7 +55,7 @@ void setPlayOffTeam(bool[], int);
 bool ifGameEnd(bool[], int);
 
 //informacje techniczne, zawartoœæ tabel
-void showTables(string resultsString[7][4], int resultsInt[7][10], bool teamStatus[8]) {
+void showTables(string resultsString[7][4], int resultsInt[7][11], bool teamStatus[8]) {
 
 	for (int i = 0; i < 7; i++)
 	{
@@ -93,13 +93,13 @@ int main()
 		"BRAZIL", "ARGENTINA", "ITALY", "FRANCE", "GERMANY", "MEXICO", "EGYPT", "JAPAN" };
 	//status w turnieju
 	bool teamStatus[NUM_TEAMS] = { true,true, true, true, true, true, true, true };
-	//tablica wyników played | team1 | team2 | wynik
+	//tablica wyników played | team1 | team2 | wynik 
 	//0-not played not paired, 1- played, 2- not played but paired
-	string resultsString[7][4] = { {"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"} };
+	string resultsString[7][5] = { {"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"} };
 	// tablica wyników int
-	// played|id1|id2|score1|score2|ext1|ext2|plt1|plt2|1x2|
+	// played|id1|id2|score1|score2|ext1|ext2|plt1|plt2|1x2|| runda
 	//0-not played not paired, 1- played, 2- not played but paired
-	int resultsInt[7][10] = { {0},{0},{0},{0},{0},{0},{0} };
+	int resultsInt[7][11] = { {0},{0},{0},{0},{0},{0},{0} };
 
 	//WYNIK MECZU
 	int score11 = 0, score21 = 0; // wynik 90min
@@ -114,25 +114,28 @@ int main()
 		system("cls");
 		intro();
 	//	showTables(resultsString, resultsInt, teamStatus);
-		cout << "ROUND: " << round << endl;
-		cout << "-------------------------------------------"<< endl;
-	//	system("pause");
-		getRandomPairs(teamStatus, NUM_TEAMS, resultsInt, NUM_GAMES);
+
+		getRandomPairs(teamStatus, NUM_TEAMS, resultsInt, NUM_GAMES, round);
 		saveResults(teams, resultsInt, resultsString, NUM_GAMES);
-		displayResults(resultsString, NUM_GAMES);
+		displayResults(resultsString, NUM_GAMES, round);
 		system("pause");
 		cout << endl;
 	    createResults(resultsInt, NUM_GAMES, score11, score21, score12, score22, score13, score23, teamStatus);
 		saveResults(teams, resultsInt, resultsString, NUM_GAMES);
-	  	displayResults(resultsString, NUM_GAMES);
+	  	displayResults(resultsString, NUM_GAMES, round);
+		system("cls");
+		intro();
 		cout << endl;
 	//	showTables(resultsString, resultsInt, teamStatus);
-		system("pause");
 		game = ifGameEnd(teamStatus, NUM_TEAMS);
 		round++;
 	}
 	while (!game);
 
+	round--;
+	system("cls");
+	intro();
+	displayResults(resultsString, NUM_GAMES, round);
 
 	//wyœwietlenie zwyciêzcy
 	int i = 0;
@@ -164,7 +167,8 @@ void intro() {
 	cout << "------#-------#---#-------#---#------" << endl;
 	cout << "------#-------#---#-------#---#------" << endl;
 	cout << "-------------------------------------" << endl;
-	cout << "ver. 1.0.1" << endl;
+	cout << "-------------------------------------" << endl;
+	cout << "ver. 1.0.2" << endl;
 }
 int getRandomInteger(int min, int max) {	
 	int rndInt = (rand() % (max - min + 1)) + min;
@@ -177,7 +181,7 @@ void swap(int& x, int& y) {
 	y = x;
 	x = temp;
 }
-int getNextIdGame(int resultsInt[][10], int resultsIntSize) {
+int getNextIdGame(int resultsInt[][11], int resultsIntSize) {
 	int id = 0;
 	while (resultsInt[id][0] != 0)
 	{
@@ -185,7 +189,7 @@ int getNextIdGame(int resultsInt[][10], int resultsIntSize) {
 	}
 	return id;
 }
-void getRandomPairs(bool teamStatus[], int sizeTeam, int resultsInt[][10],int resultsIntSize) {
+void getRandomPairs(bool teamStatus[], int sizeTeam, int resultsInt[][11],int resultsIntSize, int round) {
 
 	vector<int>teamsToDraw; //INDEKSY DRU¯YN DO LOSOWANIA
 	vector<int>teamsPaired; //PAROWANIE DRU¯YN 1-2 3-4 ETC
@@ -216,11 +220,17 @@ void getRandomPairs(bool teamStatus[], int sizeTeam, int resultsInt[][10],int re
 		resultsInt[k][0] = 2;
 		resultsInt[k][1] = teamsPaired[i];
 		resultsInt[k][2] = teamsPaired[i + 1];
+		resultsInt[k][10] = round;
+
 		k++;
 	}
 
 }
-void displayResults(string resultsString[][4], int games) {
+void displayResults(string resultsString[][5], int games, int round) {
+	
+	cout << "ROUND: " << round << endl;
+	cout << "-------------------------------------------" << endl;
+	
 	for (int i = 0; i < games; i++)
 	{
 		if (resultsString[i][0]!="0")
@@ -229,11 +239,11 @@ void displayResults(string resultsString[][4], int games) {
 		}
 
 		cout << setw(20);
-		cout << right << resultsString[i][1] << " " << left << resultsString[i][2] << " \t" << left << resultsString[i][3] << endl;
+		cout << left << resultsString[i][4] << " " << right << resultsString[i][1] << " " << left << resultsString[i][2] << " \t\t" << left << resultsString[i][3] << endl;
 
 	}
 }
-void saveResults(string teams[] ,int resultsInt[][10], string resultsString[][4], int games) {
+void saveResults(string teams[] ,int resultsInt[][11], string resultsString[][5], int games) {
 	for (int i = 0; i < games; i++)
 	{
 		if (resultsInt[i][0] != 0)
@@ -241,6 +251,7 @@ void saveResults(string teams[] ,int resultsInt[][10], string resultsString[][4]
 			resultsString[i][0] = to_string(resultsInt[i][0]);
 			resultsString[i][1] = findNameById(teams, resultsInt[i][1]);
 			resultsString[i][2] = findNameById(teams, resultsInt[i][2]);
+			resultsString[i][4] = "Round " + to_string( resultsInt[i][10]);
 			
 			//brak remisu
 			if (resultsInt[i][3]!= resultsInt[i][4])
@@ -369,7 +380,7 @@ void penalties(int& score13, int& score23) {
 
 
 }
-void createResults(int resultsInt[7][10], int size, int &score11, int &score21, int &score12, int &score22, int &score13, int &score23, bool teamStatus[]) {
+void createResults(int resultsInt[7][11], int size, int &score11, int &score21, int &score12, int &score22, int &score13, int &score23, bool teamStatus[]) {
 	for (int i = 0; i < size; i++)
 	{
 		if (resultsInt[i][0]!=2)

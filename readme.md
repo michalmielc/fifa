@@ -4,12 +4,19 @@
 * [Setup](#setup)
 
 ## General info
-###Version 1.0.0 
- - Start Version
-###Version 1.0.1 
+
+Version 1.0.2 
+ - numbering of rounds
+ - improved display when ENTER pressed
+
+Version 1.0.1 
  - displayed matches formated
  - displayed end-score after extra time fixed
  - added info about winner 
+
+Version 1.0.0 
+ - Start Version
+
 
 ## Technologies
 Project is created with:
