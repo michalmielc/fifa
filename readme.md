@@ -4,8 +4,13 @@
 * [Setup](#setup)
 
 ## General info
-Version 1.0.0
-	
+###Version 1.0.0 
+ - Start Version
+###Version 1.0.1 
+ - displayed matches formated
+ - displayed end-score after extra time fixed
+ - added info about winner 
+
 ## Technologies
 Project is created with:
 * Microsoft Visual Studio Professional 2019

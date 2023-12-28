@@ -8,6 +8,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <vector>
+#include <iomanip>
 
 using namespace std;
 
@@ -53,6 +54,7 @@ void setPlayOffTeam(bool[], int);
 //funkcja czy koniec turnieju
 bool ifGameEnd(bool[], int);
 
+//informacje techniczne, zawartoœæ tabel
 void showTables(string resultsString[7][4], int resultsInt[7][10], bool teamStatus[8]) {
 
 	for (int i = 0; i < 7; i++)
@@ -128,9 +130,24 @@ int main()
 		system("pause");
 		game = ifGameEnd(teamStatus, NUM_TEAMS);
 		round++;
-		system("cls");
 	}
 	while (!game);
+
+
+	//wyœwietlenie zwyciêzcy
+	int i = 0;
+	for (auto winner: teamStatus)
+	{
+		if (winner)
+		{
+			cout << endl << "****************************************" << endl;
+			cout << endl << " WORLD CHAMPION: " << teams[i] << endl;
+			cout << endl << "****************************************" << endl;
+			break;
+		}
+		i++;
+	}
+
 	
 }
 
@@ -147,7 +164,7 @@ void intro() {
 	cout << "------#-------#---#-------#---#------" << endl;
 	cout << "------#-------#---#-------#---#------" << endl;
 	cout << "-------------------------------------" << endl;
-	cout << "ver. 1.0" << endl;
+	cout << "ver. 1.0.1" << endl;
 }
 int getRandomInteger(int min, int max) {	
 	int rndInt = (rand() % (max - min + 1)) + min;
@@ -211,7 +228,8 @@ void displayResults(string resultsString[][4], int games) {
 		//	cout << resultsString[i][1] << " " << resultsString[i][2] << " " << resultsString[i][3] << endl;
 		}
 
-		cout << resultsString[i][1] << " " << resultsString[i][2] << " " << resultsString[i][3] << endl;
+		cout << setw(20);
+		cout << right << resultsString[i][1] << " " << left << resultsString[i][2] << " \t" << left << resultsString[i][3] << endl;
 
 	}
 }
@@ -224,20 +242,21 @@ void saveResults(string teams[] ,int resultsInt[][10], string resultsString[][4]
 			resultsString[i][1] = findNameById(teams, resultsInt[i][1]);
 			resultsString[i][2] = findNameById(teams, resultsInt[i][2]);
 			
+			//brak remisu
 			if (resultsInt[i][3]!= resultsInt[i][4])
 			{
 				resultsString[i][3] = to_string(resultsInt[i][3]) + " : " + to_string(resultsInt[i][4]);
 			}
-
+			//remis
 			else if (resultsInt[i][3] == resultsInt[i][4]){
 				if (resultsInt[i][7] != resultsInt[i][8])
 				{
-					resultsString[i][3] = to_string(resultsInt[i][5]) + " : " + to_string(resultsInt[i][6]) +
+					resultsString[i][3] = to_string(resultsInt[i][5]+ resultsInt[i][3]) + " : " + to_string(resultsInt[i][6]+ resultsInt[i][4]) +
 					"(" + to_string(resultsInt[i][3]) + " : " + to_string(resultsInt[i][4]) + ")" +
 						"p. " + to_string(resultsInt[i][7]) + " : " + to_string(resultsInt[i][8]);
 				}
 				else {
-					resultsString[i][3] = to_string(resultsInt[i][5]) + " : " + to_string(resultsInt[i][6]) +
+					resultsString[i][3] = to_string(resultsInt[i][5]+ resultsInt[i][3]) + " : " + to_string(resultsInt[i][6]+ resultsInt[i][4]) +
 					"(" + to_string(resultsInt[i][3]) + " : " + to_string(resultsInt[i][4]) + ")";
 						
 				}
@@ -410,5 +429,3 @@ bool ifGameEnd(bool teamStatus[], int size) {
 	}
 	return gameEnd;
 }
-
-
