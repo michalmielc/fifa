@@ -5,6 +5,10 @@
 
 ## General info
 
+Version 1.0.3
+ - penalties engine fixed and more realistic
+ - scores passed to fuction simplified 
+
 Version 1.0.2 
  - numbering of rounds
  - improved display when ENTER pressed
