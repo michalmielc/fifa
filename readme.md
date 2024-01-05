@@ -5,6 +5,16 @@
 
 ## General info
 
+Version 1.0.5
+ - improved view
+ - added match third place
+
+Version 1.0.4
+ - import teams from a text file
+ - multichoice of tournament ( best of 4,8,16,32) 
+ - user can choise playining teams
+ - tables modified by pointers 
+
 Version 1.0.3
  - penalties engine fixed and more realistic
  - scores passed to fuction simplified 

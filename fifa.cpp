@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <vector>
 #include <iomanip>
+#include <fstream>
+#include <cctype>
 
 using namespace std;
 
@@ -22,95 +24,122 @@ void intro(string);
 int getRandomInteger(int, int);
 
 //losowanie par
-void getRandomPairs(bool[], int, int[][11], int, int);
+void getRandomPairs(int* , int , int** , int , int, int );
 
 //zamiana miejscami w tablicy
 void swap(int&, int&);
 
 //wyszukanie wolnego id w tabeli spotkania
-int getNextIdGame(int[][11], int);
+int getNextIdGame(int**, int);
 
 //wyœwietlenie wyników spotkania zakoñczone lub nierozegrane
-void displayResults(string[][5], int, int);
+void displayResults(string**, int, int);
 
 //funkcja znajduj¹ca nazwê kraju wg id
-string findNameById(string [], int );
+string findNameById(vector<string>, int );
 
 //funkcja zapisuj¹ca dane z tabeli results do tabeli wyniki
-void saveResults(string[], int[][11], string[][5], int);
+void saveResults(vector<string>, int**, string**, int);
 
 //funkcja losuje wynik
-void createResult(int [3], int [3]);
+void createResult(int*, int*);
 
 //rzuty karne
 void penalties(int&, int&);
 
 //funkcja losuj¹ca wyniki
-void createResults(int[7][11], int, int[], int[],  bool[]);
+void createResults(int**, int, int*, int*,  int*);
 
 //playoff znacznik gra/odpada
-void setPlayOffTeam(bool[], int);
+void setPlayOffTeam(int*, int);
 
 //funkcja czy koniec turnieju
-bool ifGameEnd(bool[], int);
-
-//informacje techniczne, zawartoœæ tabel
-void showTables(string resultsString[7][4], int resultsInt[7][11], bool teamStatus[8]) {
-
-	for (int i = 0; i < 7; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			cout << resultsString[i][j] << " ";
-		}
-		cout << endl;
-	}
-
-	for (int i = 0; i < 7; i++)
-	{
-		for (int j = 0; j < 10; j++)
-		{
-			cout << resultsInt[i][j] << " ";
-		}
-		cout << endl;
-	}
-
-	cout << endl;
-	for (int j = 0; j < 8; j++)
-	{
-		cout << teamStatus[j] << " ";
-	}
-	cout << endl;
-}
+bool ifGameEnd(int, int);
 
 //suma goli teamu w meczu  
-int sumGoals(int[]);
+int sumGoals(int*);
+
+//wybór liczby dru¿yn
+int getNumTeams();
+
+//wczytanie dru¿yn z pliku
+void importTeams(vector<string>&);
+
+//wyœwietlenie dru¿yn do wyboru
+void showTeamAtChoise(vector<string>,int);
+
+//wskazanie teamow grajacy/ niegraj¹cy
+void swapTeams(vector<string>&, int);
+
+//ustawienie listy teamów graj¹cych
+void setTeams(vector<string>&, int );
+
+//utworzenie tabeli wyników string
+string **createTableResultsString(int );
+
+//utworzenie tabeli wyników int
+int **createTableResultsInt(int );
+
+//utworzenie tabeli status dry¿yn
+int *createTableTeamStatus(int );
+
+//obliczenie iloœci rund
+int getRounds(int );
+
+
 
 int main()
 {
-	string version = "1.0.3";
+	string version = "ver. 1.0.5";
 	setRandom();
-	const int NUM_TEAMS = 8;
-	const int NUM_GAMES = 7;
-	string teams[NUM_TEAMS] = {
-		"BRAZIL", "ARGENTINA", "ITALY", "FRANCE", "GERMANY", "MEXICO", "EGYPT", "JAPAN" };
-	//status w turnieju
-	bool teamStatus[NUM_TEAMS] = { true,true, true, true, true, true, true, true };
-	//tablica wyników played | team1 | team2 | wynik 
-	//0-not played not paired, 1- played, 2- not played but paired
-	string resultsString[NUM_GAMES][5] = { {"0"},{"0"},{"0"},{"0"},{"0"},{"0"},{"0"} };
-	// tablica wyników int
-	// played|id1|id2|score1|score2|ext1|ext2|plt1|plt2|1x2|| runda
-	//0-not played not paired, 1- played, 2- not played but paired
-	int resultsInt[NUM_GAMES][11] = { {0},{0},{0},{0},{0},{0},{0} };
+	intro(version);
+	int numTeams = getNumTeams();
+	int numGames = numTeams;
+	int teamsTotalNum; // LICZBA DRU¯YN Z PLIKU
+	vector<string> teams;
 
-	//WYNIK MECZU
-	//int score11 = 0, score21 = 0; // wynik 90min
-	//int score12 = 0, score22 = 0; // dogrywka
-	//int score13 = 0, score23 = 0; // rzuty karne
+	importTeams(teams);
+	teamsTotalNum = teams.size();
 
-	int teamScore1[3] = { 0,0,0 };  // wynik 90min/dogrywka/rz. karne
-	int teamScore2[3] = { 0,0,0 };
+	char option;
+	// WYBRÓW DRY¯YN
+	do{
+		system("cls");
+		intro(version);
+		showTeamAtChoise(teams, numTeams);
+		cout << "press S to SKIP or C to continue ( pick other teams)";
+		cin >> option;
+		if (toupper(option) == 'S')
+		{
+			break;
+		}
+		swapTeams(teams, teamsTotalNum);
+
+	} while (toupper(option)!= 'F');
+
+	setTeams(teams, numTeams);
+	system("cls");
+	showTeamAtChoise(teams, numTeams);
+
+
+	// TURNIEJ
+
+	//status w turnieju wartoœci to nr rund. Pó³fina³: przegrani + 1, finaliœci +2
+	int *teamStatus = createTableTeamStatus(numTeams);
+
+	string **resultsString = createTableResultsString(numGames);
+
+	int **resultsInt = createTableResultsInt(numGames);
+	int roundTotal = getRounds(numTeams);
+	teamsTotalNum = teams.size();
+
+	//----------------------------------------
+		//WYNIK MECZU
+
+	int *teamScore1 = new int[3]{ 0 };   //90min/dog/rz.k
+	int *teamScore2 = new int[3]{ 0 };
+
+	//----------------------------------------
 
 	int round = 1;
 	bool game = true;
@@ -119,47 +148,185 @@ int main()
 
 		system("cls");
 		intro(version);
-	//	showTables(resultsString, resultsInt, teamStatus);
-
-		getRandomPairs(teamStatus, NUM_TEAMS, resultsInt, NUM_GAMES, round);
-		saveResults(teams, resultsInt, resultsString, NUM_GAMES);
-		displayResults(resultsString, NUM_GAMES, round);
+		getRandomPairs(teamStatus, numTeams, resultsInt, numGames, round, roundTotal);
+		saveResults(teams, resultsInt, resultsString, numGames);
+		displayResults(resultsString, numGames, round);
 		system("pause");
 		cout << endl;
-	    createResults(resultsInt, NUM_GAMES, teamScore1, teamScore2, teamStatus);
-		saveResults(teams, resultsInt, resultsString, NUM_GAMES);
-	  	displayResults(resultsString, NUM_GAMES, round);
+		createResults(resultsInt, numGames, teamScore1, teamScore2, teamStatus);
+		saveResults(teams, resultsInt, resultsString, numGames);
+		displayResults(resultsString, numGames, round);
 		system("cls");
 		intro(version);
 		cout << endl;
-	//	showTables(resultsString, resultsInt, teamStatus);
-		game = ifGameEnd(teamStatus, NUM_TEAMS);
 		round++;
-	}
-	while (!game);
+		game = ifGameEnd( round, roundTotal);
+	} while (!game);
 
-	round--;
+
 	system("cls");
 	intro(version);
-	displayResults(resultsString, NUM_GAMES, round);
+	displayResults(resultsString, numGames, round);
 
 	//wyœwietlenie zwyciêzcy
-	int i = 0;
-	for (auto winner: teamStatus)
+	int max = teamStatus[0];
+	string wc = teams[0];
+	for ( int i = 1; i < numTeams; i++)
 	{
-		if (winner)
+		if (max < teamStatus[i])
 		{
-			cout << endl << "****************************************" << endl;
-			cout << endl << " WORLD CHAMPION: " << teams[i] << endl;
-			cout << endl << "****************************************" << endl;
-			break;
+			max = teamStatus[i];
+			wc = teams[i];
 		}
-		i++;
+	
 	}
 
-	
+	cout << endl << "****************************************" << endl;
+	cout << endl << " WORLD CHAMPION: " << wc << endl;
+	cout << endl << "****************************************" << endl;
+
+	//----------------------------------------
+	delete[] teamStatus;
+	delete[] resultsString;
+	delete[] resultsInt;
+	delete[] teamScore1;
+	delete[] teamScore2;
 }
 
+//-----------------NOWE FUNKCJE --------------------
+int getNumTeams()
+{
+	int numTeams;
+	do {
+		cout << "ENTER THE NUMBER OF TEAMS. " << endl;
+		cout << "ONLY ARE ALLOWED: 4,8,16,32" << endl;
+		cin >> numTeams;
+	} while (numTeams != 4 && numTeams != 8 && numTeams != 16 && numTeams != 32);
+	return numTeams;
+}
+
+void importTeams(vector<string> &teams) {
+	ifstream teamsInFile("teams.txt");
+	string team;
+	while (getline(teamsInFile,team)) {
+		teams.push_back(team);
+	}
+}
+
+void showTeamAtChoise(vector<string> teams, int numTeams) {
+	for (int i = 0; i < teams.size(); i++)
+	{
+		if (i+1 == numTeams+1)
+		{
+			cout << "-----------" << endl;
+		}
+		cout << i+1 << " " << teams[i] << endl;
+	}
+
+	cout << endl;
+
+}
+
+void swapTeams( vector<string> &teams, int numTeams) {
+
+	int num1, num2;
+	do {
+		cout << "ENTER THE NUMER OF TEAM IT PLAYS: ";
+		cin >> num1;
+		cout << "ENTER THE NUMER OF TEAM IT WON'T PLAY: ";
+		cin >> num2;
+	} while (num1<1 || num2 <1 || num1 >(numTeams + 1) || num2 >(numTeams + 1));
+	
+	swap(teams[num1-1], teams[num2-1]);
+}
+
+void setTeams(vector<string>& teams, int numTeams)
+{
+	do
+	{
+		teams.pop_back();
+	} while (teams.size() > numTeams);
+}
+
+string **createTableResultsString(int numGames) {
+
+	//tablica wyników   
+	//  indeksy 0-3
+	// played | team1 | team2 | wynik | round
+	//0-not played not paired, 1- played, 2- not played but paired
+
+	const int NUM_COLS = 5;
+	string** resultsString = new string * [numGames];
+
+	for (int i = 0; i < numGames; i++)
+	{
+		resultsString[i] = new string[NUM_COLS];
+
+		for (int j = 0; j < NUM_COLS; j++)
+
+		{
+			resultsString[i][j] = "0"; // inicjalizacja 0
+		}
+
+	}
+
+	return resultsString;
+}
+
+int **createTableResultsInt(int numGames) {
+
+	// tablica wyników int
+	// indeksy 0-8
+	// played | team1 | team2 | wynik1|wynik2|dog1|dog2|rzk1|rzk2 |runda
+	// played|id1|id2|score1|score2|ext1|ext2|plt1|plt2|round
+	//0-not played not paired, 1- played, 2- not played but paired
+
+	const int NUM_COLS = 10;
+	int **resultsInt = new int *[numGames];
+	for (int i = 0; i < numGames; i++)
+	{
+		resultsInt[i] = new int[NUM_COLS];
+		for (int j = 0; j < NUM_COLS; j++)
+		{
+			resultsInt[i][j] = 0; // inicjalizacja 0
+		}
+	}
+
+	return resultsInt;
+}
+
+int *createTableTeamStatus(int numTeams) {
+
+	int *teamStatus = new int[numTeams];
+
+	for (int i = 0; i < numTeams; i++)
+	{
+		teamStatus[i] = 1; // inicjalizacja 1 runda
+	}
+
+	return teamStatus;
+}
+
+int getRounds(int teamsCounter) {
+	int rounds=0;
+	switch (teamsCounter) {
+	case 32:
+		rounds = 6;
+		break;
+	case 16:
+		rounds = 5;
+		break;
+	case 8:
+		rounds = 4;
+		break;
+	case 4:
+		rounds = 3;
+		break;
+	}
+	return rounds;
+}
+
+//-------------------------------------------------
 void setRandom() {
 	unsigned seed = time(0);
 	srand(seed);
@@ -175,6 +342,7 @@ void intro(string version) {
 	cout << "-------------------------------------" << endl;
 	cout << "-------------------------------------" << endl;
 	cout << version << endl;
+	cout << endl;
 }
 int getRandomInteger(int min, int max) {	
 	int rndInt = (rand() % (max - min + 1)) + min;
@@ -187,89 +355,131 @@ void swap(int& x, int& y) {
 	y = x;
 	x = temp;
 }
-int getNextIdGame(int resultsInt[][11], int resultsIntSize) {
+int getNextIdGame(int **resultsInt, int numGames) {
 	int id = 0;
-	while (resultsInt[id][0] != 0)
+	while (id<numGames)
 	{
+		if (resultsInt[id][0] == 0)
+		{
+			break;
+		}
 		id++;
 	}
 	return id;
 }
-void getRandomPairs(bool teamStatus[], int sizeTeam, int resultsInt[][11],int resultsIntSize, int round) {
+void getRandomPairs(int *teamStatus, int sizeTeam, int **resultsInt, int numGames, int round, int roundTotal) {
 
 	vector<int>teamsToDraw; //INDEKSY DRU¯YN DO LOSOWANIA
 	vector<int>teamsPaired; //PAROWANIE DRU¯YN 1-2 3-4 ETC
-
-	for (int i = 0; i < sizeTeam; i++)
+	
+	// JE¯ELI TO NIE JEST PÓ£FINA£
+	if (round <= roundTotal - 2)
 	{
-		if (teamStatus[i])
+		for (int i = 0; i < sizeTeam; i++)
 		{
-			teamsToDraw.push_back(i);
+			if (teamStatus[i] == round)
+			{
+				teamsToDraw.push_back(i);
+			}
 		}
+
+		while (!teamsToDraw.empty()) {
+			int rndindex = getRandomInteger(0, teamsToDraw.size() - 1);
+			teamsPaired.push_back(teamsToDraw[rndindex]);
+			swap(teamsToDraw[rndindex], teamsToDraw[teamsToDraw.size() - 1]);
+			teamsToDraw.pop_back();
+		}
+
+
+		int k = getNextIdGame(resultsInt, numGames);
+
+
+		//SKOJARZONE PARY WPROWADZAMY DO TABLICY RESULTS
+
+		for (int i = 0; i < teamsPaired.size(); i = i + 2)
+		{
+			resultsInt[k][0] = 2;
+			resultsInt[k][1] = teamsPaired[i];
+			resultsInt[k][2] = teamsPaired[i + 1];
+			resultsInt[k][9] = round;
+			k++;
+		}
+
 	}
 
+	//MECZ O 3
+	else if (round == roundTotal - 1) {
+		for (int i = 0; i < sizeTeam; i++)
+		{
+			if (teamStatus[i] == round)
+			{
+				teamsPaired.push_back(i);
+			}
+		}
 
-	while (!teamsToDraw.empty()) {
-		int rndindex = getRandomInteger(0, teamsToDraw.size() - 1);
-		teamsPaired.push_back(teamsToDraw[rndindex]);
-		swap(teamsToDraw[rndindex], teamsToDraw[teamsToDraw.size() - 1]);
-		teamsToDraw.pop_back();
+		resultsInt[numGames- 2][0] = 2;
+		resultsInt[numGames - 2][1] = teamsPaired[0];
+		resultsInt[numGames - 2][2] = teamsPaired[1];
+		resultsInt[numGames - 2][9] = round;
 	}
 
-	cout << endl;
-	int k = getNextIdGame(resultsInt, resultsIntSize);
-	
-	//SKOJARZONE PARY WPROWADZAMY DO TABLICY RESULTS
+	//FINAL 
+	else {
+		for (int i = 0; i < sizeTeam; i++)
+		{
+			if (teamStatus[i] == round + 1)
+			{
+				teamsPaired.push_back(i);
+			}
+		}
 
-	for (int i = 0; i < teamsPaired.size(); i=i+2)
-	{
-		resultsInt[k][0] = 2;
-		resultsInt[k][1] = teamsPaired[i];
-		resultsInt[k][2] = teamsPaired[i + 1];
-		resultsInt[k][10] = round;
-
-		k++;
+		resultsInt[numGames - 1][0] = 2;
+		resultsInt[numGames - 1][1] = teamsPaired[0];
+		resultsInt[numGames - 1][2] = teamsPaired[1];
+		resultsInt[numGames - 1][9] = round;
 	}
-
 }
-void displayResults(string resultsString[][5], int games, int round) {
+void displayResults(string **resultsString, int numGames, int roundTotal) {
 	
+	string round = resultsString[0][4];
 	cout << "ROUND: " << round << endl;
-	cout << "-------------------------------------------" << endl;
-	
-	for (int i = 0; i < games; i++)
+	cout << "---------------------------------------------------------------" << endl;
+
+
+	for (int i = 0; i < numGames; i++)
 	{
-		if (resultsString[i][0]!="0")
-		{
-		//	cout << resultsString[i][1] << " " << resultsString[i][2] << " " << resultsString[i][3] << endl;
+	
+		if (resultsString[i][1] != "0") {
+			if (i > 0)
+			{
+				if (resultsString[i][4] != resultsString[i - 1][4])
+				{
+					cout << "ROUND: " << resultsString[i][4] << endl;
+					cout << "---------------------------------------------------------------" << endl;
+
+				}
+			}
+
+			string str1 = resultsString[i][1];
+			string str2 = resultsString[i][2];
+			string str3 = resultsString[i][3];
+
+			cout << setw(10) << " " << setw(20) << right << str1 << " - " << str2 << " " << str3 << endl;
+
 		}
-
-		cout << setw(20);
-		cout << left << resultsString[i][4] << " " << right << resultsString[i][1] << " " << left << resultsString[i][2] << " \t\t" << left << resultsString[i][3] << endl;
-
 	}
 }
-void saveResults(string teams[] ,int resultsInt[][11], string resultsString[][5], int games) {
-	for (int i = 0; i < games; i++)
+void saveResults(vector<string> teams,int **resultsInt, string **resultsString, int numGames) {
+	
+	for (int i = 0; i < numGames; i++)
 	{
 		if (resultsInt[i][0] != 0)
 		{
 			resultsString[i][0] = to_string(resultsInt[i][0]);
 			resultsString[i][1] = findNameById(teams, resultsInt[i][1]);
 			resultsString[i][2] = findNameById(teams, resultsInt[i][2]);
-		/*	if (i == games-2)
-			{
-				resultsString[i][4] = "THIRD PLACE";
-			}*/
-			 if (i == games-1)
-			{
-				resultsString[i][4] = "FINAL";
-			}
-			else {
-				resultsString[i][4] = "Round " + to_string(resultsInt[i][10]);
-			}
+		
 
-			
 			//brak remisu
 			if (resultsInt[i][3]!= resultsInt[i][4])
 			{
@@ -289,15 +499,28 @@ void saveResults(string teams[] ,int resultsInt[][11], string resultsString[][5]
 						
 				}
 			}
-			
+			// zapisanie nr rundy
+		
+			if (i ==numGames-1)
+			{
+				resultsString[i][4] = "FINAL";
+			}
 
+			else if (i == numGames - 2)
+			{
+				resultsString[i][4] = "THIRD PLACE";
+			}
+
+			else {
+				resultsString[i][4] = to_string(resultsInt[i][9]);
+			}
 		}
 	}
 }
-string findNameById(string teams[], int id) {
+string findNameById(vector<string> teams, int id) {
 	return teams[id];
 }
-void createResult(int teamScore1[3], int teamScore2[3]) {
+void createResult(int *teamScore1, int *teamScore2) {
 	
 	//wyzerowanie
 	for (int i = 0; i < 3; i++)
@@ -404,8 +627,8 @@ void penalties(int &scoreTeam1, int &scoreTeam2) {
 
 
 }
-void createResults(int resultsInt[7][11], int size, int teamScore1[3], int teamScore2[3], bool teamStatus[]) {
-	for (int i = 0; i < size; i++)
+void createResults(int **resultsInt, int numGames, int *teamScore1, int* teamScore2, int *teamStatus) {
+	for (int i = 0; i < numGames; i++)
 	{
 		if (resultsInt[i][0]!=2)
 		{
@@ -425,47 +648,54 @@ void createResults(int resultsInt[7][11], int size, int teamScore1[3], int teamS
 			//wygrana1
 			if (sumGoals(teamScore1) > sumGoals(teamScore2))
 			{
-				resultsInt[i][9] = 1;
-				setPlayOffTeam(teamStatus, resultsInt[i][2]);
+				setPlayOffTeam(teamStatus, resultsInt[i][1]);
+				// pó³fna³
+				if (i == numGames - 3 || i == numGames - 4)
+				{
+					
+					setPlayOffTeam(teamStatus, resultsInt[i][1]); //TRZYKROTNE DODANIE
+					setPlayOffTeam(teamStatus, resultsInt[i][1]); //TRZYKROTNE DODANIE
+					setPlayOffTeam(teamStatus, resultsInt[i][2]);
+				}
+
 			}
 			//wygrana 2
 			else if (sumGoals(teamScore1) < sumGoals(teamScore2))
 			{
-				resultsInt[i][9] = 2;
-				setPlayOffTeam(teamStatus, resultsInt[i][1]);
+				setPlayOffTeam(teamStatus, resultsInt[i][2]);
+				// pó³fna³
+				if (i == numGames - 3 || i == numGames - 4)
+				{
+		
+					setPlayOffTeam(teamStatus, resultsInt[i][2]);//TRZYKROTNE DODANIE
+					setPlayOffTeam(teamStatus, resultsInt[i][2]);
+					setPlayOffTeam(teamStatus, resultsInt[i][1]);
+				}
 			}
 			//remis
 			else {
-				resultsInt[i][9] = 0;
+				
 			}
 		}
 	}
 }
-void setPlayOffTeam(bool teamStatus[],  int id) {
-	teamStatus[id] = false;
-}
-bool ifGameEnd(bool teamStatus[], int size) {
+void setPlayOffTeam(int *teamStatus,  int id) {
 
-	bool gameEnd = true;
-	int k = 0;
-	int playing = 0;
-	
-	while (k<size && playing <2) {
-		if (teamStatus[k])
-		{
-			playing++;
-		}
-		k++;
-		}
-		
-	if (playing >= 2)
-	{
-		gameEnd = false;
-	}
-	return gameEnd;
+	teamStatus[id] ++;
 }
-int sumGoals(int score[])
+bool ifGameEnd( int round, int roundTotal) {
+
+	bool gameEnd = false;
+
+		if (roundTotal < round)
+		{
+			gameEnd = true;
+		}
+		return gameEnd;
+}
+int sumGoals(int *score)
 {
 	int sum = score[0] + score[1] + score[2];
 	return sum;
 }
+
