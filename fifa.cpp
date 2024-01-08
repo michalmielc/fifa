@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <fstream>
 #include <cctype>
+#include<windows.h>
 
 using namespace std;
 
@@ -86,11 +87,17 @@ int *createTableTeamStatus(int );
 //obliczenie iloœci rund
 int getRounds(int );
 
+//dogrywka
+void extraTime(int&, int&);
 
+//koñcowa klasyfikacja podium
+void finalRating(int*, vector<string>);
+
+//---------------   MAIN  ------------------------
 
 int main()
 {
-	string version = "ver. 1.0.5";
+	string version = "ver. 1.0.6";
 	setRandom();
 	intro(version);
 	int numTeams = getNumTeams();
@@ -100,7 +107,7 @@ int main()
 
 	importTeams(teams);
 	teamsTotalNum = teams.size();
-
+	system("Color 0A");
 	char option;
 	// WYBRÓW DRY¯YN
 	do{
@@ -169,21 +176,8 @@ int main()
 	displayResults(resultsString, numGames, round);
 
 	//wyœwietlenie zwyciêzcy
-	int max = teamStatus[0];
-	string wc = teams[0];
-	for ( int i = 1; i < numTeams; i++)
-	{
-		if (max < teamStatus[i])
-		{
-			max = teamStatus[i];
-			wc = teams[i];
-		}
 	
-	}
-
-	cout << endl << "****************************************" << endl;
-	cout << endl << " WORLD CHAMPION: " << wc << endl;
-	cout << endl << "****************************************" << endl;
+	finalRating(teamStatus, teams);
 
 	//----------------------------------------
 	delete[] teamStatus;
@@ -216,6 +210,7 @@ void importTeams(vector<string> &teams) {
 void showTeamAtChoise(vector<string> teams, int numTeams) {
 	for (int i = 0; i < teams.size(); i++)
 	{
+			
 		if (i+1 == numTeams+1)
 		{
 			cout << "-----------" << endl;
@@ -332,6 +327,9 @@ void setRandom() {
 	srand(seed);
 }
 void intro(string version) {
+	system("Color 0B"); // DOMYŒLNY KOLOR
+
+	cout <<  endl;
 	cout << "-------WELCOME TO FIFA GAME ---------" << endl;
 	cout << "-------------------------------------" << endl;
 	cout << "------#####---#---#####-----#--------" << endl;
@@ -341,7 +339,7 @@ void intro(string version) {
 	cout << "------#-------#---#-------#---#------" << endl;
 	cout << "-------------------------------------" << endl;
 	cout << "-------------------------------------" << endl;
-	cout << version << endl;
+	cout <<  " " << version << endl;
 	cout << endl;
 }
 int getRandomInteger(int min, int max) {	
@@ -541,12 +539,8 @@ void createResult(int *teamScore1, int *teamScore2) {
 	
 		if (teamScore1[0] == teamScore2[0]) {
 			// ET
-			int scoresEt[] = { 0,0,0,0,0,0,0,0,1,1,1,2 }; // TABLICA WYNIKÓW
-			index = getRandomInteger(0, 11);
-			teamScore1[1] = scoresEt[index];
 
-			index = getRandomInteger(0, 11);
-			teamScore2[1] = scoresEt[index];
+			extraTime(teamScore1[1], teamScore2[1]);
 
 			if (teamScore1[1] == teamScore2[1]) {
 				penalties(teamScore1[2], teamScore2[2]);
@@ -556,6 +550,18 @@ void createResult(int *teamScore1, int *teamScore2) {
 	
 		
 	}
+void extraTime(int &teamScore1, int &teamScore2) {
+
+		int index;
+		int scoresEt[] = { 0,0,0,0,0,0,0,0,1,1,1,2 }; // TABLICA WYNIKÓW
+		index = getRandomInteger(0, 11);
+		teamScore1 = scoresEt[index];
+
+		index = getRandomInteger(0, 11);
+		teamScore2 = scoresEt[index];
+
+}
+
 void penalties(int &scoreTeam1, int &scoreTeam2) {
 
 	bool scores[] = { true,true,false,true,false,true,true,false,true,false,true }; // TABLICA WYNIKÓW
@@ -697,5 +703,44 @@ int sumGoals(int *score)
 {
 	int sum = score[0] + score[1] + score[2];
 	return sum;
+}
+
+void finalRating(int* teamStatus, vector<string> teams) {
+	
+	int firstPlace;
+	firstPlace =  teamStatus[0];
+	string podium[3] = { teams[0], teams[0], teams[0] };
+
+
+	for (int i = 1; i < teams.size(); i++)
+	{
+		if (firstPlace < teamStatus[i])
+		{
+			firstPlace = teamStatus[i];
+			podium[0] = teams[i];
+		}
+
+	}
+
+	for (int i = 1; i < teams.size(); i++)
+	{
+		if (teamStatus[i] == firstPlace-1)
+		{
+			podium[1] = teams[i];
+		}
+
+		else if (teamStatus[i] == firstPlace - 2)
+		{
+
+			podium[2] = teams[i];
+		}
+
+	}
+
+	cout << endl << "****************************************" << endl;
+	cout << endl << " WORLD CHAMPION: " << podium[0] << endl;
+	cout << endl << " SECOND PLACE: " << podium[1] << endl;
+	cout << endl << " THIRD PLACE: " << podium[2] << endl;
+	cout << endl << "****************************************" << endl;
 }
 

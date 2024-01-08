@@ -5,14 +5,19 @@
 
 ## General info
 
-Version 1.0.5
+Version 1.0.6
+ - new function extra time
+ - color of font
+ - final rating added
+
+Version 1.0.5 dev. 1.0.4
  - improved view
  - added match third place
 
-Version 1.0.4
+Version 1.0.4 --- not commited
  - import teams from a text file
  - multichoice of tournament ( best of 4,8,16,32) 
- - user can choise playining teams
+ - user can choise playing teams
  - tables modified by pointers 
 
 Version 1.0.3
