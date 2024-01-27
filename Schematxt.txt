@@ -1,0 +1,26 @@
+1) Wczytanie dru¿yn z pliku
+vector<string> teams;
+
+2) Wybór dru¿yn
+	setTeams(teams, numTeams);
+
+	//
+
+	tablica team status int ------------------------------------
+	int *teamStatus = createTableTeamStatus(numTeams);
+	index = id Team,  wartoœæ nr rundy
+
+	tablica wyników string ------------------------------------
+	string **resultsString = createTableResultsString(numGames);
+		//tablica wyników   
+	//  indeksy 0-3
+	// played | team1 | team2 | wynik | round
+	//0-not played not paired, 1- played, 2- not played but paired
+
+	tablica wyników wskaŸników------------------------------------
+	int **resultsInt = createTableResultsInt(numGames);
+	// tablica wyników int
+	// indeksy 0-8
+	// played | team1 | team2 | wynik1|wynik2|dog1|dog2|rzk1|rzk2 |runda
+	// played|id1|id2|score1|score2|ext1|ext2|plt1|plt2|round
+	//0-not played not paired, 1- played, 2- not played but paired

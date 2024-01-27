@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.md" />
+    <Text Include="Schematxt.txt" />
     <Text Include="teams.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

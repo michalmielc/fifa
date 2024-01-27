@@ -1,42 +1,75 @@
-Argentina
-Brazil
-Uruguay
-Colombia
-England
-France
-Belgium
-Netherlands
-Portugal
-Spain
-Italy
-Croatia
-Germany
-Denmark
-Sweden
-Switzerland
-Scotland
-Serbia
-Korea Republic
-Japan
-UAE
-Iran
-USA
-Mexico
-Canada
-Senegal
-Nigeria
-Egypt
-Ghana
-Morocco
-Australia
-New Zealand
-Poland
-Ukraine
-Austria
-Hungary
-Ecuador
-Turkey
-Czechia
-Chile
-Panama
-Côte d'Ivoire
+# put a hash to comment a line
+# Name | ShortName | Potential |
+Argentina|ARG|9
+Brazil|BRA|9
+Uruguay|URU|7
+Colombia|COL|7
+England|ENG|9
+France|FRA|9
+Belgium|BEL|8
+Netherlands|HOL|8
+Portugal|POR|8
+Spain|ESP|9
+Italy|ITA|9
+Croatia|CRO|8
+Germany|GER|9
+Denmark|DEN|7
+Sweden|SWE|7
+Switzerland|SUI|6
+Scotland|SCO|5
+Serbia|SRB|9
+Korea Republic|KOR|6
+Japan|JAP|6
+UAE|UAE|3
+Iran|IRN|3
+USA|USA|5
+Mexico|MEX|7
+Canada|CAN|5
+Senegal|SEN|5
+Nigeria|NGA|6
+Egypt|EGY|5
+Ghana|GHA|5
+Morocco|MAR|6
+Australia|AUS|5
+New Zealand|NZE|5
+Poland|POL|4
+Ukraine|UKR|5
+Austria|AUT|4
+Hungary|HUN|4
+Ecuador|ECU|4
+Turkey|TUR|5
+Czechia|CZE|5
+Chile|CHI|5
+Panama|PAN|3
+Côte d'Ivoire|CIV|3
+Wales|WAL|3
+Cameroon|CAM|3
+Norway|NOR|4
+Mali|MLI|2
+Costa Rica|COS|3
+Saudi Arabia|ASA|3
+Tunisia|TUN|3
+Peru|PER|3
+Scotland|SCO|3
+Algeria|ALG|3
+Russia|RUS|6
+China|CHN|3
+Paraguay|PAR|4
+Greece|GRE|4
+Romania|ROM|4
+Trinidad and Tobago|TTO|2
+Bosnia and Herzegovina|BHC|3
+Qatar|QAT|2
+Iraq|IRQ|2
+South Africa|SAF|2
+North Korea|DPR|2
+Congo DR|CDR|2
+Slovenia|SLA|4
+Republic of Ireland|IRL|4
+Uzbekistan|UZB|1
+Honduras|HON|2
+El Salvador|SAL|1
+Bulgaria|BUL|2
+Montenergo|MNT|2
+North Macedonia|MAC|2
+Slovakia|SLO|3

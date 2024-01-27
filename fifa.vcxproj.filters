@@ -22,5 +22,6 @@
   <ItemGroup>
     <Text Include="readme.md" />
     <Text Include="teams.txt" />
+    <Text Include="Schematxt.txt" />
   </ItemGroup>
 </Project>

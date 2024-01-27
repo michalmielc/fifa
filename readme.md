@@ -4,6 +4,10 @@
 * [Setup](#setup)
 
 ## General info
+Version 1.1.0
+ - data tables changed on struct
+ - added potential of teams
+ - new countries added
 
 Version 1.0.6
  - new function extra time
