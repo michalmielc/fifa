@@ -1,904 +1,366 @@
-// fifa.cpp : 
-// 
-// Symulator MŒ w pi³ce no¿nej.
-// System pucharowy.
+// FIFA 
+// FOOTBALL SIMULATOR 
+//------------------------
 
+#include "TournamentSettings.h"
+#include "Menu.h"
 #include <iostream>
-#include <string>
-#include <ctime>
-#include <cstdlib>
-#include <vector>
-#include <iomanip>
-#include <fstream>
-#include <cctype>
-#include<windows.h>
 
 using namespace std;
 
-// TOURNAMENTS SETTINGS 
+int main() {
 
-typedef enum TOUR_TYPE { PLAYOFF = 1, GROUP16, GROUP24, GROUP32 };
-// TYPE OF TOURNAMENT 
-struct Settings {
-	bool game; // true -czy gramy
-	int numTeams; // 
-	int numGames;
-	int numRounds;
-	int currRound;
-	TOUR_TYPE tType;
-};
+	int menuWindow = 0;
+	int tourType = 0;
+	Menu menu;
+	TournamentSettings ts;
 
-// TEAM STATISTIC
-struct Stats {
-	bool playing;
-	int round;
-	int matches;
-	int points;
-	int wins;
-	int draws;
-	int losts;
-	int sGoals;
-	int lGoals;
-};
+	do {
+		system("cls");
+		switch (menuWindow) {
+			case -1:
+				exit(EXIT_FAILURE);
+				break;
+			case 0:
+				menu.intro("TEST 2.0.1");
+				menu.getBackwardForward(menuWindow);
+				cout << "VALUE: " << menuWindow;
+				break;
+			case 1:
+				menu.displayTournamentTypes(tourType);
+				ts.renewSettings(tourType);
+				menu.getBackwardForward(menuWindow);
+				break;
+			case 2:
+				menu.getBackwardForward(menuWindow);
+				break;
+		}
+	} while ( menuWindow < 3);
 
-// TEAM DATA
-struct Team {
-	int id;
-	string name;
-	string shortName;
-	int potential; // si³a dru¿yny 0-9
-	Stats stats;
-};
 
-// MATCHES
-struct Match {
-	bool played = false;
-	bool paired = false;
-	int id1;
-	int id2;
-	string name1;
-	string name2;
-	string sName1;
-	string sName2;
-	string result = "0:0"; // end result formatted 
-	int fScore1=0; // final score incl extra time 
-	int fScore2=0;
-	int score1=0;
-	int score2=0;
-	int ext1=0;
-	int ext2=0;
-	int plt1=0;
-	int plt2=0;
-	int round;
-};
+}
+
+
+
+// OLD VERSION
+
+//#include <iomanip>
+//#include "RandomSettings.h"
+//#include "TournamentSettings.h"
+//#include <vector>
+//#include "Team.h"
+// 
+//#include "Import.h"
 
 // DECLARATIONS
-//intro 
-void intro(string);
 
-//funkcja ustalenie ziarna dla losowania
-void setRandom();
+////
+////wyœwietlanie dru¿yn
+//void showTeamAtChoise(vector<Team>, vector<Team>, string );
+//
+//void showTeamAtChoiseByContinent(vector<Team> , string );
+//
+//
+////wskazanie teamow grajacy/ niegraj¹cy
+//void swapTeams(vector<Team>&, vector <Team>&);
+//
+////zamiana miejscami w tablicy
+//void swap(int&, int&);
 
-//losowanie liczby z przedzia³u
-int getRandomInteger(int, int);
 
-//ustawienie wstepne turnieju
-Settings* getSettings();
-
-//wczytanie dru¿yn z pliku
-void importTeams(vector<Team>&);
-
-//dekodowanie wczytanej linii z pliku
-void getTeamFromLine(Team &,string);
-
-// wyœwietlenie listy dru¿yn
-void showTeamAtChoise(vector<Team>, int);
-
-//wskazanie teamow grajacy/ niegraj¹cy
-void swapTeams(vector<Team>&);
-
-//zamiana miejscami w tablicy
-void swap(int&, int&);
-
-//ustawienie listy teamów graj¹cych
-void setTeams(vector<Team>&, int);
-
-//ustawienia wstepne statusu dry¿yn
-void createTeamsStatus(vector<Team>&);
-
-// creating table matches
-Match* createTableMatches(int);
-
-int getRounds(TOUR_TYPE tt, vector<Team> teams);
-
-bool ifGameEnd(Match*, int );
-
-//wyszukanie wolnego id w tabeli spotkania
-int getNextIdGame(Match*, int);
-
-//losowanie par
-void getRandomPairs(vector<Team>, Match*,  Settings*);
-
-//wyœwietlenie wyników spotkania zakoñczone lub nierozegrane
-void displayResults(Match* , Settings*);
-
-//funkcja losuje wynik
-void createResults(vector<Team>&, Match*, Settings*, bool);
-
-//rzuty karne
-void penalties(int&, int&);
-
-bool ifGameEnd(Match*, int);
-
-//dogrywka
-void extraTime(int&, int&);
-
-//zapis statystyk 
-void saveTeamStat(vector<Team>&, Match &, Settings*, bool);
-
-//zapis wyniku do tabeli wyników
-void saveResult(Match &);
-
-//koñcowa klasyfikacja podium
-void finalRating(vector<Team>);
 
 //---------------   MAIN  ------------------------
 //------------------------------------------------
-int main()
-{
-	string version = "ver. 1.1.0";
-	setRandom();
-	intro(version);
+//int main()
+//{
+//	string version = "ver. 1.2.0";
+//
+//	RandomSettings rndSettings;
+//
+//	intro(version);
+//
+//	vector<Team> teams_temp, teams_qualified;
+//
+//	Import import;
+//
+//	import.importTeams(teams_temp);  // TEAMS IMPORT 
+//
+//	//MENU 1
+//	TournamentSettings trnSettings;
+//
+//	char option;
+//
+//	string view = "ANY";
+//
+//	do {
+//		system("cls");
+//
+//		intro(version);
+//
+//		cout << "\n-------------------------------------------------------- \n";
+//		cout << "\n YOU NEED TO PICK: " << trnSettings.getNumTeams() << " TEAMS";
+//		cout << "\n PICK TEAMS USING OPTIONS:";
+//		cout << "\nA- VIEW ALL" << "| B- EUROPE | " << "C- CONBEMOL " << "| D- AFRICA " << "| E- ASIA " << "| F- CONCACAF " << "| G- OCEANIA";
+//		cout << "\nS- SWAP TEAMS";
+//		cout << "\nR- RESET TEAMS";
+//		cout << "\nT- RANDOM TEAMS";
+//		cout << "\nW- FORWARD";
+//		cout << "\nQ- RETURN";
+//		cout << "\n-------------------------------------------------------- \n"; 
+//
+//		showTeamAtChoise(teams_temp, teams_qualified, view);
+//
+//		cin >> option;
+//
+//	
+//			if (toupper(option) == 'Q')
+//			{
+//				/*	trnSettings = nullptr;
+//				* POPRAWIÆ KOD
+//					delete trnSettings;
+//					TournamentSettings* trnSettings = new TournamentSettings;*/
+//			}
+//
+//			else if (toupper(option) == 'S')
+//			{
+//				swapTeams(teams_temp, teams_qualified);
+//			}
+//
+//
+//			else if (toupper(option) == 'R')
+//			{
+//				char c;
+//				do {
+//					cout << "DO YOU WANT TO REALLY RESET SEEDING? Y/N? ";
+//					cin >> c;
+//					if (toupper(c) == 'Y')
+//					{
+//						teams_temp.clear();
+//						teams_qualified.clear();
+//						import.importTeams(teams_temp);
+//						break;
+//					}
+//
+//				} while (toupper(c) == 'Y' || toupper(c) == 'N');
+//
+//			}
+//
+//
+//			else if (toupper(option) == 'T')
+//			{
+//				// LOSOWANIE DRU¯YN
+//			}
+//
+//			else if (toupper(option) == 'A')
+//			{
+//				view = "ANY";
+//			}
+//
+//			else if (toupper(option) == 'B')
+//			{
+//				view = "EUROPE";
+//			}
+//
+//			else if (toupper(option) == 'C')
+//			{
+//				view = "CONBEMOL";
+//			}
+//
+//			else if (toupper(option) == 'D')
+//			{
+//				view = "AFRICA";
+//			}
+//
+//			else if (toupper(option) == 'E')
+//			{
+//				view = "ASIA";
+//			}
+//
+//			else if (toupper(option) == 'F')
+//			{
+//				view = "CONCACAF";
+//			}
+//
+//			else if (toupper(option) == 'G')
+//			{
+//				view = "OCEANIA";
+//			}
+//
+//		
+//
+//
+//	} while ( toupper(option) != 'W' || toupper(option) !='Q');
+//
+//}
+	// TUTAJ ZAKOÑCZY£EM -------------------------
+// ------------------------------------------
 
-	Settings *set = getSettings();
-
-	vector<Team> teams;
-	importTeams(teams);
-
-	char option;
-	// WYBRÓW DRY¯YN
-	do{
-		system("cls");
-		intro(version);
-
-		showTeamAtChoise(teams, set->numTeams);
-
-		cout << "press S to SKIP or C to continue ( pick other teams)";
-		cin >> option;
-		if (toupper(option) == 'S')
-		{
-			break;
-		}
-		swapTeams(teams);
-
-	} while (toupper(option)!= 'S');
+	//Match *ptrMatch = createTableMatches(set->numGames);
 
 
-	setTeams(teams, set->numTeams);
-	system("cls");
+	//do {
 
-	showTeamAtChoise(teams, set->numTeams);
+	//	system("cls");
+	//	intro(version);
+	//	getRandomPairs(teams, ptrMatch, set);
+	//	displayResults(ptrMatch,set);
 
+	//	system("pause");
 
-	set->numRounds = getRounds(set->tType, teams);
-
-	// TURNIEJ
-	createTeamsStatus(teams);
-
-	Match *ptrMatch = createTableMatches(set->numGames);
-
-
-	do {
-
-		system("cls");
-		intro(version);
-		getRandomPairs(teams, ptrMatch, set);
-		displayResults(ptrMatch,set);
-
-		system("pause");
-
-		createResults(teams, ptrMatch, set, true);
-		system("cls");
+	//	createResults(teams, ptrMatch, set, true);
+	//	system("cls");
 
 
-		intro(version);
-		displayResults(ptrMatch, set);
+	//	intro(version);
+	//	displayResults(ptrMatch, set);
 
-		system("pause");
+	//	system("pause");
 
-		set->currRound++;
-		set->game = ifGameEnd( ptrMatch,set->numGames);
-	} while (!set->game);
+	//	set->currRound++;
+	//	set->game = ifGameEnd( ptrMatch,set->numGames);
+	//} while (!set->game);
 
 
-	system("cls");
-	intro(version);
+	//system("cls");
+	//intro(version);
 
-	displayResults(ptrMatch,set);
+	//displayResults(ptrMatch,set);
 
-	////wyœwietlenie zwyciêzcy
-	
-	finalRating( teams);
+	//////wyœwietlenie zwyciêzcy
+	//
+	//finalRating( teams);
 
-	////----------------------------------------
-	
-	
-	delete set;
-	delete[] ptrMatch;
+	//////----------------------------------------
+	//
+	//
+	//delete set;
+	//delete[] ptrMatch;
 
-}
+
 
 //-----------------DEFINITIONS --------------------
-void setRandom() {
-	unsigned seed = time(0);
-	srand(seed);
-}
-void intro(string version) {
-	system("Color 0B"); // DOMYŒLNY KOLOR
 
-	cout << endl;
-	cout << "-------WELCOME TO FIFA GAME ---------" << endl;
-	cout << "-------------------------------------" << endl;
-	cout << "------#####---#---#####-----#--------" << endl;
-	cout << "------#-------#---#--------#-#-------" << endl;
-	cout << "------#####---#---#####---#####------" << endl;
-	cout << "------#-------#---#-------#---#------" << endl;
-	cout << "------#-------#---#-------#---#------" << endl;
-	cout << "-------------------------------------" << endl;
-	cout << "-------------------------------------" << endl;
-	cout << " " << version << endl;
-	cout << endl;
-}
-int getRandomInteger(int min, int max) {
-	int rndInt = (rand() % (max - min + 1)) + min;
-	return rndInt;
-}
-void getTeamFromLine(Team &t, string line) {
-
-	// readed line:
-	// Name | ShortName | Potential |
-
-	int delPos  = line.find('|');
-	
-	t.name = line.substr(0, delPos);
-	line = line.substr(delPos + 1, line.length() - delPos);
-
-	delPos = line.find('|');
-	t.shortName= line.substr(0, delPos);
-	line = line.substr(delPos + 1, line.length() - delPos);
-
-	t.potential= stoi(line);
-
-}
-void importTeams(vector<Team>& teams) {
-
-	fstream teamsInFile("teams.txt", ios::in);
-	string line;
-
-	if (teamsInFile)
-	{
-
-		while (getline(teamsInFile, line)) {
-
-			// reading line without comment
-			if (line.find('#') == string::npos)
-			{	
-				Team t;
-				getTeamFromLine(t, line);
-				teams.push_back(t);
-			}
-		}
-	}
-
-	else
-	{
-		cout << "CANNOT LAUNCH THE GAME!";
-	}
-
-	teamsInFile.close();
-	
-}
-void showTeamAtChoise(vector<Team> teams, int numTeams) {
-
-
-	for (int i = 0; i < numTeams; i++)
-	{
-		cout  << i + 1 << " " << setw(25) << teams[i].name << " P.: " << teams[i].potential << "\n";
-	}
-		cout << "------------------------------------------------\n";
-
-	for (int i = numTeams; i < teams.size(); i++)
-	{
-		cout << i + 1 << " " << setw(25) << teams[i].name << " P.: " << teams[i].potential << "\n";
-	}
-
-}
-void swapTeams(vector<Team>& teams) {
-
-	int num1, num2;
-	do {
-		cout << "ENTER THE NUMER OF TEAM IT PLAYS: 1 TO " << teams.size() << " ";
-		cin >> num1;
-		cout << "ENTER THE NUMER OF TEAM IT WON'T PLAY: 1 TO " << teams.size() << " ";
-		cin >> num2;
-	} while (num1<1 || num2 <1 || num1 >(teams.size() + 1) || num2 >(teams.size() + 1));
-
-	swap(teams[num1 - 1], teams[num2 - 1]);
-}
-void swap(int& x, int& y) {
-
-	int temp;
-	temp = y;
-	y = x;
-	x = temp;
-}
-Settings* getSettings()
-{
-	//int numTeams;
-	//int numGames;
-	//TOUR_TYPE tType;
-
-	Settings* set = new Settings;
-	int tourType = 0;
-	int numTeams = 0;
-
-	do {
-		cout << "CHOOSE TYPE OF TOURNAMENT. " << endl;
-		cout << "1. PLAY OFF" << endl;
-		cout << "2. 16 TEAMS - 4 GROUPS X 4 | BEST OF 8  *INACTIVE* " << endl;
-		cout << "3. 24 TEAMS - 6 GROUPS X 4 | BEST OF 16 *INACTIVE*" << endl;
-		cout << "4. 32 TEMAS - 8 GROUPS X 4 | BEST OF 16 *INACTIVE*" << endl;
-		cin >> tourType;
-	} while (tourType != 1);
-
-	// TAKE INTO ACCOUNT IF OTHER TOURNAMNETS WILL BE ACTIVE
-
-	switch (tourType) {
-	case 1:
-		set->tType = PLAYOFF;
-		break;
-	default:
-		break;
-	}
-
-	// TAKE INTO ACCOUNT IF OTHER TOURNAMNETS WILL BE ACTIVE
-	do {
-		cout << "YOU'VE CHOOSEN " << set->tType << endl;
-		cout << "ENTER THE NUMBER OF TEAMS. " << endl;
-		cout << "ONLY ARE ALLOWED: 4,8,16,32,64" << endl;
-		cin >> numTeams;
-	} while (numTeams % 4 != 0 && numTeams < 65 && numTeams >3);
-
-	// MAIN SETTINGS
-	set->game = true;
-	set->numTeams = numTeams;
-	set->numGames = numTeams;
-	set->currRound = 1;
-
-	return set;
-}
-void setTeams(vector<Team>& teams, int numTeams)
-{
-	do
-	{
-		teams.pop_back();
-	} while (teams.size() > numTeams);
-}
-void createTeamsStatus(vector<Team>& teams) {
-
-	//struct Stats {
-	//	bool playing;
-	//	int round;
-	//	int matches;
-	//	int points;
-	//	int wins;
-	//	int draw;
-	//	int lost;
-	//	int sGoals;
-	//	int lGoals;
-	//};
-
-
-
-	for (int i = 0; i < teams.size(); i++)
-	{
-		teams[i].id = i;
-		teams[i].stats.playing = true;
-		teams[i].stats.round = 1;
-		teams[i].stats.matches = 0;
-		teams[i].stats.points = 0;
-		teams[i].stats.wins = 0;
-		teams[i].stats.draws = 0;
-		teams[i].stats.losts = 0;
-		teams[i].stats.sGoals = 0;
-		teams[i].stats.lGoals = 0;
-	}
-
-}
-Match *createTableMatches(int numGames) {
-	// MATCHES
-	//struct Match {
-	//	bool played;
-	//	bool paired;
-	//	int id1;
-	//	int id2;
-	//	string name1;
-	//	string name2;
-	//	string sName1;
-	//	string sName2;
-	//	int fScore1; // final score incl extra time 
-	//	int fScore2;
-	//	int score1;
-	//	int score2;
-	//	int ext1;
-	//	int ext2;
-	//	int plt1;
-	//	int plt2;
-	// int round;
-	//};
-
-	Match *matches = new Match[numGames];
-
-	for (int i = 0; i < numGames; i++)
-	{
-		matches[i].paired = false;
-		matches[i].played= false;
-	}
-	return matches;
-}
-int getRounds(TOUR_TYPE tt, vector<Team> teams) {
-
-	int rounds = 0;
-	if (tt == PLAYOFF)
-	{
-
-		switch (teams.size()) {
-
-		case 64:
-			rounds = 7;
-			break;
-		case 32:
-			rounds = 6;
-			break;
-		case 16:
-			rounds = 5;
-			break;
-		case 8:
-			rounds = 4;
-			break;
-		case 4:
-			rounds = 3;
-			break;
-		}
-	}
-	return rounds;
-}
-bool ifGameEnd(Match *ptr, int numGames) {
-
-	bool gameEnd = false;
-	int i = 0;
-
-	while ( i < numGames) {
-		if (!ptr[i].played)
-		{
-			break;
-		}
-		i++;
-	}
-
-	if (i>=numGames)
-	{
-		gameEnd = true;
-	}
-	return gameEnd;
-}
-void getRandomPairs( vector<Team> teams , Match *ptrMatches,  Settings *set) {
-
-	vector<int>teamsToDraw; //INDEKSY DRU¯YN DO LOSOWANIA
-	vector<int>teamsPaired; //PAROWANIE DRU¯YN 1-2 3-4 ETC
-
-
-	//MECZ O 3 MIEJSCE
-	if (set->currRound == set->numRounds - 1) {
-		for (int i = 0; i < teams.size(); i++)
-		{
-
-			if (teams[i].stats.round == set->currRound-1 && teams[i].stats.playing == false)
-			{
-				teamsPaired.push_back(i);
-			}
-		}
-
-		ptrMatches[set->numGames - 2].played = false;
-		ptrMatches[set->numGames - 2].paired = true;
-		ptrMatches[set->numGames - 2].round = set->currRound;
-		ptrMatches[set->numGames - 2].id1 = teamsPaired[0];
-		ptrMatches[set->numGames - 2].id2 = teamsPaired[1];
-		ptrMatches[set->numGames - 2].name1 = teams[teamsPaired[0]].name;
-		ptrMatches[set->numGames - 2].name2 = teams[teamsPaired[1]].name;
-	}
-	//FINA£
-	else if (set->currRound == set->numRounds)
-	{
-		for (int i = 0; i < teams.size(); i++)
-		{
-			if (teams[i].stats.playing == true)
-			{
-				teamsPaired.push_back(i);
-			}
-		}
-
-			ptrMatches[set->numGames - 1].played = false;
-			ptrMatches[set->numGames - 1].paired = true;
-			ptrMatches[set->numGames - 1].round = set->currRound;
-			ptrMatches[set->numGames - 1].id1 = teamsPaired[0];
-			ptrMatches[set->numGames - 1].id2 = teamsPaired[1];
-			ptrMatches[set->numGames - 1].name1 = teams[teamsPaired[0]].name;
-			ptrMatches[set->numGames - 1].name2 = teams[teamsPaired[1]].name;
-
-	}
-	// POZOSTA£E RUNDY PLAYOFF
-	else {
-		//WYBRÓR DRU¯YN GRAJ¥CYCH	
-		for (int i = 0; i < teams.size(); i++)
-		{
-			if (teams[i].stats.playing)
-			{
-
-				teamsToDraw.push_back(i);
-			}
-		}
-
-		//LOSOWANIE DOPISANIE DO TABLICY PAIRED
-		while (!teamsToDraw.empty()) {
-			int rndindex = getRandomInteger(0, teamsToDraw.size() - 1);
-			teamsPaired.push_back(teamsToDraw[rndindex]);
-			swap(teamsToDraw[rndindex], teamsToDraw[teamsToDraw.size() - 1]);
-			teamsToDraw.pop_back();
-		}
-
-
-		//SKOJARZONE PARY WPROWADZAMY DO TABLICY MATCHES
-		int k = getNextIdGame(ptrMatches, set->numGames);
-
-		for (int i = 0; i < teamsPaired.size(); i = i + 2)
-		{
-			ptrMatches[k].played = false;
-			ptrMatches[k].paired = true;
-			ptrMatches[k].round = set->currRound;
-			ptrMatches[k].id1 = teamsPaired[i];
-			ptrMatches[k].id2 = teamsPaired[i + 1];
-			ptrMatches[k].name1 = teams[teamsPaired[i]].name;
-			ptrMatches[k].name2 = teams[teamsPaired[i + 1]].name;
-			k++;
-		}
-
-	}
-}
-int getNextIdGame(Match* ptrMatches, int numGames) {
-
-	int i = 0;
-	while (ptrMatches[i].played)
-	{
-
-		i++;
-	}
-	return i;
-}
-void displayResults(Match* ptrMatch, Settings* set) {
-
-	cout << "ROUND: " << ptrMatch[0].round << endl;
-	cout << "---------------------------------------------------------------" << endl;
-
-	for (int i = 0; i < set->numGames; i++)
-	{
-
-		if (ptrMatch[i].paired) {
-			if (i > 0)
-			{
-
-				if (ptrMatch[i].round != ptrMatch[i - 1].round)
-				{
-					cout << "ROUND: " << ptrMatch[i].round << endl;
-					cout << "---------------------------------------------------------------" << endl;
-
-				}
-			}
-
-			string str1 = ptrMatch[i].name1;
-			string str2 = ptrMatch[i].name2;
-			string str3 = ptrMatch[i].result;
-
-			cout << setw(10) << " " << setw(20) << right << str1 << " - " << str2 << " " << setw(20) << left << str3 << endl;
-
-		}
-	}
-}
-void saveResult(Match &m) {
-
-	//brak remisu
-	if (m.score1 != m.score2)
-	{
-		m.result = to_string(m.score1) + " : " + to_string(m.score2);
-	}
-	//remis
-	else if (m.score1 == m.score2) {
-		//roztrzygniêcie w karnych
-		if (m.ext1 == m.ext2)
-		{
-			m.result = to_string(m.fScore1) + " : " + to_string(m.fScore2) +
-				"(" + to_string(m.score1) + " : " + to_string(m.score2) + ")" +
-				"p. " + to_string(m.plt1) + " : " + to_string(m.plt2);
-		}
-		//roztrzygniêcie w dogrywce
-		else {
-			m.result = to_string(m.fScore1) + " : " + to_string(m.fScore2) +
-				"(" + to_string(m.score1) + " : " + to_string(m.score2) + ")";
-
-		}
-	}
-
-}
-void createResult(int* teamScore1, int* teamScore2) {
-
-	//wyzerowanie
-	for (int i = 0; i < 3; i++)
-	{
-		teamScore1[i] = 0;
-		teamScore2[i] = 0;
-	}
-
-
-	// 90 minut
-	int scores[] = { 0,0,0,0,1,1,1,2,2,3,4,5 }; // TABLICA WYNIKÓW
-
-	int index = getRandomInteger(0, 11);
-	teamScore1[0] = scores[index];
-
-	index = getRandomInteger(0, 11);
-	teamScore2[0] = scores[index];
-
-	if (teamScore1[0] == teamScore2[0]) {
-		// ET
-
-		extraTime(teamScore1[1], teamScore2[1]);
-
-		if (teamScore1[1] == teamScore2[1]) {
-			penalties(teamScore1[2], teamScore2[2]);
-		}
-
-	}
-
-
-}
-void extraTime(int& teamScore1, int& teamScore2) {
-
-	int index;
-	int scoresEt[] = { 0,0,0,0,0,0,0,0,1,1,1,2 }; // TABLICA WYNIKÓW
-	index = getRandomInteger(0, 11);
-	teamScore1 = scoresEt[index];
-
-	index = getRandomInteger(0, 11);
-	teamScore2 = scoresEt[index];
-
-}
-void penalties(int& scoreTeam1, int& scoreTeam2) {
-
-	bool scores[] = { true,true,false,true,false,true,true,false,true,false,true }; // TABLICA WYNIKÓW
-	int index;
-	const int MAX_PEN = 5;
-
-	int round = 1;
-	int toScore13 = MAX_PEN;
-	int toScore23 = MAX_PEN;
-
-	do {
-
-		index = scores[getRandomInteger(0, 10)];
-		if (index) {
-			scoreTeam1++;
-		}
-
-		toScore13--;
-
-		if (scoreTeam2 + toScore23 < scoreTeam1)
-		{
-			break;
-		}
-
-		if (scoreTeam1 + toScore13 < scoreTeam2)
-		{
-			break;
-		}
-
-		index = scores[getRandomInteger(0, 9)];
-		if (index) {
-			scoreTeam2++;
-
-		}
-
-		toScore23--;
-
-		if (scoreTeam2 + toScore23 < scoreTeam1)
-		{
-			break;
-		}
-
-		if (scoreTeam1 + toScore13 < scoreTeam2)
-		{
-			break;
-		}
-
-		round++;
-	}
-
-	while (round <= MAX_PEN);
-
-	if (scoreTeam1 == scoreTeam2) {
-
-		do {
-			index = scores[getRandomInteger(0, 9)];
-			if (index) {
-				scoreTeam1++;
-
-			}
-
-			index = scores[getRandomInteger(0, 9)];
-			if (index) {
-				scoreTeam2++;
-			}
-
-		} while (scoreTeam1 == scoreTeam2);
-	}
-
-
-}
-void createResults(vector<Team> &teams, Match* ptrMatch, Settings* set, bool playOff) {
-
-	int* teamScore1 = new int[3]{ 0 };   //90min/dog/rz.k
-	int* teamScore2 = new int[3]{ 0 };
-
-
-	for (int i = 0; i < set->numGames; i++)
-	{
-		if (!ptrMatch[i].played && ptrMatch[i].paired)
-		{
-		
-			createResult(teamScore1, teamScore2);
-			ptrMatch[i].played = true;
-			ptrMatch[i].score1 = teamScore1[0];
-			ptrMatch[i].score2 = teamScore2[0];
-			ptrMatch[i].ext1 = teamScore1[1];
-			ptrMatch[i].ext2 = teamScore2[1];
-			ptrMatch[i].plt1 = teamScore1[2];
-			ptrMatch[i].plt2 = teamScore2[2];
-			ptrMatch[i].fScore1 = ptrMatch[i].score1 + ptrMatch[i].ext1;
-			ptrMatch[i].fScore2 = ptrMatch[i].score2 + ptrMatch[i].ext2;
-			saveResult(ptrMatch[i]);
-			saveTeamStat(teams, ptrMatch[i], set, playOff);
-		}
-	}
-
-	delete[] teamScore1;
-	delete[] teamScore2;
-}
-void saveTeamStat(vector<Team> &teams, Match &ptrMatch, Settings* set, bool playOff) {
-
-	teams[ptrMatch.id1].stats.matches++;
-	teams[ptrMatch.id2].stats.matches++;
-	teams[ptrMatch.id1].stats.sGoals += ptrMatch.fScore1;
-	teams[ptrMatch.id1].stats.lGoals += ptrMatch.fScore2;
-	teams[ptrMatch.id2].stats.sGoals += ptrMatch.fScore2;
-	teams[ptrMatch.id2].stats.lGoals += ptrMatch.fScore1;
-
-	//WYGRANA PRZEGRANA
-	if (ptrMatch.fScore1 != ptrMatch.fScore2)
-	{
-		if (ptrMatch.fScore1 > ptrMatch.fScore2)
-		{
-			teams[ptrMatch.id1].stats.wins++;
-			teams[ptrMatch.id2].stats.losts++;
-			teams[ptrMatch.id1].stats.points += 3;
-
-			if (playOff)
-			{
-				teams[ptrMatch.id2].stats.playing = false;
-				teams[ptrMatch.id1].stats.round++;
-			}
-		}
-
-		else {
-			teams[ptrMatch.id2].stats.wins++;
-			teams[ptrMatch.id1].stats.losts++;
-			teams[ptrMatch.id2].stats.points += 3;
-
-			if (playOff)
-			{
-				teams[ptrMatch.id1].stats.playing = false;
-				teams[ptrMatch.id2].stats.round++;
-			}
-		}
-	}
-	//REMIS
-	else {
-		teams[ptrMatch.id1].stats.draws++;
-		teams[ptrMatch.id2].stats.draws++;
-		teams[ptrMatch.id1].stats.points++;
-		teams[ptrMatch.id2].stats.points++;
-
-		if (playOff)
-		{
-			if (ptrMatch.plt1 > ptrMatch.plt2)
-			{
-				teams[ptrMatch.id2].stats.playing = false;
-				teams[ptrMatch.id1].stats.round++;
-			}
-			else{
-				teams[ptrMatch.id1].stats.playing = false;
-				teams[ptrMatch.id2].stats.round++;
-			}
-		}
-	}
-
-
-	//teams[ptrMatch.id1].stats.playing;
-	//bool playing;
-	//int round;
-	//int matches;
-	//int points;
-	//int wins;
-	//int draws;
-	//int losts;
-	//int sGoals;
-	//int lGoals;
-
-}
-void finalRating(vector<Team> teams) {
-
-
-
-	for (int i= teams.size()-1; i >0; i--)
-	{
-		for (int index = 0; index < i; index++)
-		{
-			if (teams[index].stats.round > teams[index+1].stats.round)
-			{
-				swap(teams[index], teams[index + 1]);
-			}
-
-			else if (teams[index].stats.round == teams[index + 1].stats.round)
-			{
-				if (teams[index].stats.matches > teams[index + 1].stats.matches)
-				{
-					swap(teams[index], teams[index + 1]);
-				}
-
-				else {
-					if (teams[index].stats.points > teams[index + 1].stats.points)
-					{
-						swap(teams[index], teams[index + 1]);
-					}
-
-				}
-			}
-			
-		}
-	}
-
-	cout << endl;
-	cout << endl;
-	cout << "NO | COUNTRY | ROUNDS | MATCHES | POINTS | G+ | G- "<< endl;
-
-	cout << endl;
-	
-	int pos = 1;
-
-	for (int i = teams.size()-1; i>=0; i--)
-	{
-
-		cout <<pos<< ". " << teams[i].name << " | " <<  teams[i].stats.round << " | " <<  teams[i].stats.matches << " | " <<
-			teams[i].stats.points << " | " << teams[i].stats.sGoals << " | " << teams[i].stats.lGoals << endl;
-		pos++;
-	}
-}
-
+//
+//void showTeamAtChoise(vector<Team> teamsTemp, vector<Team> teamsQualified, string continent) {
+//
+//	vector<string> displayedTeams;
+//	string line;
+//	int i = 0; //counter lines
+//
+//	
+//	while (i < teamsTemp.size())
+//	{
+//		bool emptyLine = true;
+//
+//		if (continent == "ANY")
+//		{
+//			emptyLine = false;
+//			line = teamsTemp[i].getStringId() + ". " + teamsTemp[i].getName();
+//			line = line.append("				");
+//		}
+//
+//		else
+//		{
+//			if (teamsTemp[i].getContinent() == continent)
+//			{
+//				emptyLine = false;
+//				line = teamsTemp[i].getStringId() + ". " + teamsTemp[i].getName();
+//				line = line.append("				");
+//			}
+//		}
+//
+//		if (!emptyLine) {
+//			displayedTeams.push_back(line);
+//		}
+//
+//		i++;
+//	 }
+//
+//	i = 0;
+//
+//	while(i < teamsQualified.size())
+//		{
+//			if (i< displayedTeams.size())
+//			{
+//				displayedTeams[i] = displayedTeams[i].append(teamsQualified[i].getStringId() + ". " + teamsQualified[i].getName());
+//
+//			}
+//
+//			else
+//			{
+//				line = "				";
+//				line.append(teamsQualified[i].getStringId() + ". " + teamsQualified[i].getName());
+//				displayedTeams.push_back(line);
+//			}
+//			i++;
+//		}
+//
+//	
+//	
+//
+//	for (int j = 0; j < displayedTeams.size(); j++)
+//		{
+//			cout << displayedTeams[j] << endl;
+//		}
+//
+//}
+//
+//void showTeamAtChoiseByContinent(vector<Team> teams,  string continent) {
+//
+//	for (int i = 0; i < teams.size(); i++)
+//	{
+//
+//		if (continent=="ANY")
+//		{
+//			cout << i + 1 << " ";
+//			teams[i].printTeam();
+//		}
+//
+//		else if (teams[i].getContinent() == continent)
+//		{
+//			cout << i + 1 << " ";
+//			teams[i].printTeam();
+//		}
+//
+//	}
+//
+//}
+//
+//void swapTeams(vector<Team>& teamsTemp, vector<Team>& teamsQualified ) {
+//
+//	int num1, num2;
+//	
+//		cout << "ENTER THE NUMER OF TEAM WHICH WILL PLAY: ";
+//		cin >> num1;
+//		cout << "SEED WTH NUMBER: ";
+//		cin >> num2;
+//		int last = teamsTemp.size() - 1;
+//		swap(teamsTemp[num1 - 1], teamsTemp[last]);
+//		teamsTemp[last].setQualified(true);
+//		teamsQualified.push_back(teamsTemp[last]);
+//		teamsTemp.pop_back();
+//}
+//
+//void swap(int& x, int& y) {
+//
+//	int temp;
+//	temp = y;
+//	y = x;
+//	x = temp;
+//}
+//
+//void setRandomQualifiers(RandomSettings rndSettings, int numTeams, vector<Team> teamsTemp, vector<Team> teamsQualified) {
+//	int* ptr = rndSettings.createRandomOrderIndexes(numTeams);
+//
+//	for (int i = 0; i < numTeams; i++)
+//	{
+//		int last = teamsTemp.size() - 1;
+//		swap(teamsTemp[num1 - 1], teamsTemp[last]);
+//		teamsTemp[last].setQualified(true);
+//		teamsQualified.push_back(teamsTemp[last]);
+//		teamsTemp.pop_back();
+//	}
+//
+//	delete[]ptr;
+//
+//}

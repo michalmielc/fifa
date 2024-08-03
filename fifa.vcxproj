@@ -140,11 +140,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="fifa.cpp" />
+    <ClCompile Include="Import.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.md" />
     <Text Include="Schematxt.txt" />
     <Text Include="teams.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="_Import.h" />
+    <ClInclude Include="_Match.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="_RandomSettings.h" />
+    <ClInclude Include="_Team.h" />
+    <ClInclude Include="_TeamStats.h" />
+    <ClInclude Include="TournamentSettings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

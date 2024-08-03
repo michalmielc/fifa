@@ -18,10 +18,36 @@
     <ClCompile Include="fifa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Import.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.md" />
     <Text Include="teams.txt" />
     <Text Include="Schematxt.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TournamentSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_Team.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_TeamStats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_RandomSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_Match.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_Import.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

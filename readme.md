@@ -4,6 +4,16 @@
 * [Setup](#setup)
 
 ## General info
+FEATURES:
+- teams seed 
+- choosing temas by continent
+
+Version 1.2.0
+- rebuilding structs to classes
+
+Version 1.1.1
+- fixed bug number of goals 
+
 Version 1.1.0
  - data tables changed on struct
  - added potential of teams
@@ -26,7 +36,7 @@ Version 1.0.4 --- not commited
 
 Version 1.0.3
  - penalties engine fixed and more realistic
- - scores passed to fuction simplified 
+ - scores passed to function simplified 
 
 Version 1.0.2 
  - numbering of rounds
